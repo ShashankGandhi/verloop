@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  web:
+    container_name: web_1
+    build:
+      context: ./build-context-webserver
+      dockerfile: Dockerfile.webserver
+    ports:
+      # for flask 
+      # - "8000:8000"
+      # for node
+      - "80:80"
+      - "4000:4000"
+    volumes:
+      # - ./devops-scripts:/devops-scripts
+      # - ../flask:/root/flask
+      - ../node:/root/node
+      - ./forever:/root/.forever
+    env_file:
+      - env-variables
+    # command: bash -c 'env >> /etc/environment && cd /root/flask && pip install -r requirements.txt && tail -f /dev/null'
+    command: bash -c 'env >> /etc/environment && cd /root/node && npm install && forever start -c "node --max_old_space_size=$NODE_THREAD_SIZE" -f app.js && tail -f /dev/null'
+    # command: bash -c 'env >> /etc/environment && cd /root/node && npm install && tail -f /dev/null'
+
+  db:
+    container_name: db_1
+    image: mysql:8.0.12
+    ports:
+      - "3306:3306"
+    volumes:
+      # - ./devops-scripts:/docker-entrypoint-initdb.d/
+      - ./mysqldata:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
+    env_file:
+      - env-variables

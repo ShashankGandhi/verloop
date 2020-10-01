@@ -1,0 +1,12 @@
+docker/mysqldata/
+docker/forever/
+docker/esdata
+docker/env-variables
+
+
+flask/__pycache__
+flask/models/__pycache__
+
+
+node/node_modules/
+node/package-lock.json

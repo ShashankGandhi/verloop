@@ -1,0 +1,29 @@
+FROM ubuntu:16.04
+
+# Install openssh. Required to run bash
+# Without the "mkdir" the server does not start!
+
+RUN apt-get update \
+    && mkdir /var/run/sshd \
+    && apt-get install -y openssh-server bzip2
+
+# Install nodejs
+RUN apt-get update \
+    && apt-get install -y curl \
+    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    && apt-get install -y nodejs
+
+# Install libfontconfig. This is required by PhantomJS to render email templates on the server
+RUN apt-get update \
+    && apt-get install -y libfontconfig
+
+# Install build-essentials and python. Required for node-gyp.
+RUN apt-get update \
+    && apt-get -y install g++ build-essential python2.7 python-pip
+
+# Install "forever" to keep the server up all the time
+RUN npm install -g forever
+
+# Install nginx
+RUN apt-get update \
+    && apt-get install -y nginx
